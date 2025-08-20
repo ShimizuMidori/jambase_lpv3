@@ -23,13 +23,25 @@ from dotenv import load_dotenv
 from openai import OpenAI
 from openai import RateLimitError, APIStatusError
 
+# --- .env は任意（あれば読む）。無ければスキップしてOK ---
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except Exception:
+    pass
+
 # ────────────────────────────────────────────────────────────────────────────
-# .env 読み込み & OpenAI クライアント
+# APIキー取得：Cloud→env→.env（load_dotenv）順で探す
 # ────────────────────────────────────────────────────────────────────────────
-load_dotenv()
-API_KEY = os.getenv("OPENAI_API_KEY")
+API_KEY = None
+if "OPENAI_API_KEY" in st.secrets:
+    API_KEY = st.secrets["OPENAI_API_KEY"]
 if not API_KEY:
-    raise RuntimeError("OPENAI_API_KEY が見つかりません。.env に設定してください。")
+    API_KEY = os.getenv("OPENAI_API_KEY")
+if not API_KEY:
+    st.error("OPENAI_API_KEY が見つかりません。CloudのSecrets、または環境変数/ .env を設定してください。")
+    st.stop()
+
 client = OpenAI(api_key=API_KEY)
 
 # ────────────────────────────────────────────────────────────────────────────
