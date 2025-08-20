@@ -19,30 +19,30 @@ from typing import Dict, List, Tuple
 
 import streamlit as st
 import streamlit.components.v1 as components
-from dotenv import load_dotenv
 from openai import OpenAI
 from openai import RateLimitError, APIStatusError
 
-# --- .env は任意（あれば読む）。無ければスキップしてOK ---
+# --- .env は任意（あれば読む）。無ければスキップ ---
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except Exception:
     pass
 
-# ────────────────────────────────────────────────────────────────────────────
-# APIキー取得：Cloud→env→.env（load_dotenv）順で探す
-# ────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────
+# APIキー取得：Cloud→env（→.env）順で探す
+# ─────────────────────────────────
 API_KEY = None
 if "OPENAI_API_KEY" in st.secrets:
     API_KEY = st.secrets["OPENAI_API_KEY"]
 if not API_KEY:
     API_KEY = os.getenv("OPENAI_API_KEY")
 if not API_KEY:
-    st.error("OPENAI_API_KEY が見つかりません。CloudのSecrets、または環境変数/ .env を設定してください。")
+    st.error("OPENAI_API_KEY が見つかりません。CloudのSecrets、または環境変数/.env を設定してください。")
     st.stop()
 
 client = OpenAI(api_key=API_KEY)
+
 
 # ────────────────────────────────────────────────────────────────────────────
 # ページ設定 / UI
